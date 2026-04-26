@@ -3,20 +3,23 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh 'docker build -t myapp:v2 .'
+          dir('app') {
+              sh 'docker build -t myapp:v2 .'
+          }
       }
-    }
+  }
     stage('Deploy Green') {
       steps {
-        sh 'kubectl apply -f deployment-green.yaml'
+          dir('app') {
+             sh 'kubectl apply -f deployment-green.yaml'
+          }
       }
-    }
+  }
     stage('Switch Traffic') {
       steps {
-        input "Switch to Green?"
-        sh '''
-        kubectl apply -f service.yaml
-        '''
+          dir('app') {
+              sh 'kubectl apply -f service.yaml'
+          }
       }
     }
   }
